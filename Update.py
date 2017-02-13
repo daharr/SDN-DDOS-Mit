@@ -14,7 +14,7 @@ class Trie:
 H = [ [None]*13 for i in range(2) ]
 T_split = 20
 trie1 = Trie(1,10)
-trie2 = Trie(12,10)
+trie2 = Trie(12,16)
 
 def get_Nth_bit(key, depth):
     #get the nth bit in the key
@@ -61,9 +61,9 @@ def Update(trieroot, key, value):
                 return n.depth
         newdep = n.depth + 1
         index = get_Nth_bit(key, newdep)
-        c = get_child(n,int(index))
+        c = get_child(n,int(index, 16)) ##takes a single character and puts it as an int so dec maps to dec and hex maps to hex
         if c == None:
-            c = create_child(n,int(index))
+            c = create_child(n,int(index, 16))
         n = c
 
 def Update_CP(portkey,edestkey, value):
