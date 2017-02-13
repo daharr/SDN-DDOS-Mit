@@ -66,11 +66,12 @@ def Update(trieroot, key, value):
             c = create_child(n,int(index))
         n = c
 
-def Update_CP(key1,key2, value):
+def Update_CP(portkey,edestkey, value):
     #update function for each dimension
-    len1 = Update(trie1, key1, value)
-    len2 = Update(trie2, key2, value)
+    edestkey = edestkey.translate(None, ':')
+    len1 = Update(trie1, portkey, value)
+    len2 = Update(trie2, edestkey, value)
     if len1 >= 0 and len2 >= 0:
-        p1 = prefix(key1, len1)
-        p2 = prefix(key2, len2)
+        p1 = prefix(portkey, len1)
+        p2 = prefix(edestkey, len2)
         H[len1][len2] = [p1,p2,str(value)]
