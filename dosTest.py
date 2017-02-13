@@ -30,16 +30,20 @@ def dosSim():
 
     ##start network
     net.start()
-    h5 = net.get('h5')
-    h1 = net.get('h1')
-    h1.cmd('pingall')
-    h5.cmd('pingall')
-    h1.cmd( '/home/ubuntu/D-ITG-2.8.1-r1023/src/ITGRecv/ITGRecv &' )
-    h5.cmd('/home/ubuntu/D-ITG-2.8.1-r1023/src/ITGSEND/ITGSend -T UDP -a 127.0.0.1 -c 100 -C 10 -t 15000 -l sender.log -x receiver.log &')
     CLI( net )
 
     ##en network
     net.stop()
+
+def mycmd( self, line ):
+    "this command executes the scripts for traffic generation"
+    net = self.mn
+    h5 = net.get('h5')
+    h1 = net.get('h1')
+    #net.pingAll()
+    h1.cmd( '/home/ubuntu/D-ITG-2.8.1-r1023/src/ITGRecv/ITGRecv &' )
+    h5.cmd('/home/ubuntu/D-ITG-2.8.1-r1023/src/ITGSend/ITGSend -T UDP -a 10.0.0.1 -c 100 -C 10 -t 15000 -l sender.log -x receiver.log')
+CLI.do_mycmd = mycmd
 
 if __name__ == '__main__':
     dosSim()
