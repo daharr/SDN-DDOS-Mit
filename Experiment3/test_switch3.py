@@ -56,7 +56,6 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
                          '--------  -------- ----------------- '
                          '----------------- -------- --------'
                          '----------------- -----------------')
-        bytsum = 0
         for stat in sorted([flow for flow in body if flow.priority == 1]):
             src = None
             bytsum = bytsum + stat.byte_count
@@ -69,7 +68,5 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
                              stat.match['eth_dst'],
                              src,
                              stat.packet_count, stat.byte_count)#,
-#                             stat.match['ipv4_src'], stat.match['ipv4_dst'])
-
-        for stat in sorted([flow for flow in body if flow.priority == 1]):
-            Update.Update_CP(stat.instructions[0].actions[0].port,stat.match['eth_dst'], stat.byte_count * 1.0/bytsum *100)
+#                            stat.match['ipv4_src'], stat.match['ipv4_dst'])
+			Update.Update_CP(stat.instructions[0].actions[0].port,stat.match['eth_dst'], stat.byte_count, stat.packet_count)#body.flow
