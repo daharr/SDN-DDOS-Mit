@@ -37,17 +37,17 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
             hub.sleep(10)
 
     def _request_stats(self, datapath):
-        self.logger.debug('send stats request: %016x', datapath.id)
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-
-        req = parser.OFPFlowStatsRequest(datapath)
-        datapath.send_msg(req)
+        if datapath.id == 0000000000000002:
+            self.logger.debug('send stats request: %016x', datapath.id)
+            ofproto = datapath.ofproto
+            parser = datapath.ofproto_parser
+            req = parser.OFPFlowStatsRequest(datapath)
+            datapath.send_msg(req)
 
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
-
+        flows = []
         self.logger.info('datapath         '
                          'in-port  out-port  eth-dst           '
                          'eth-src           packets  bytes   '
@@ -69,4 +69,17 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
                              src,
                              stat.packet_count, stat.byte_count)#,
 #                            stat.match['ipv4_src'], stat.match['ipv4_dst'])
-			Update.Update_CP(stat.instructions[0].actions[0].port,stat.match['eth_dst'], stat.byte_count, stat.packet_count)#body.flow
+            flows.append(stat)
+			
+        while len(flows) > 0:
+			flowcount = 1.0
+			bytecount = 0;
+			packetcount = 0;
+            for i in range(1, len(flows)):
+			    if flows[0].match['eth_dst'] == flows[i].match['eth_dst']:
+				    bytecount = flows[i].byte_count + bytecount
+					packetcount = flows[i].packet_count + packetcount
+					del flows[i]
+					i--
+            Update.Update_CP(flows[0].instructions[0].actions[0].port,flows[0].match['eth_dst'], (flows[0].byte_count + bytecount) / count, (packetcount + flows[0].packet_count) / count)
+			del flows[0]

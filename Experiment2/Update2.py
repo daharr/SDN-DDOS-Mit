@@ -1,4 +1,4 @@
-pertot = 0;
+pertot = 0
 
 class Trie:
 
@@ -77,7 +77,7 @@ def Update(trieroot, key, value):
 
 def Update_CP(portkey,edestkey, value):
     #update function for each dimension
-    pertot = pertot + value;
+    pertot = pertot + value
     portkey = str(portkey)
     edestkey = edestkey.translate(None, ':')
     len1 = Update(trie1, portkey, value)

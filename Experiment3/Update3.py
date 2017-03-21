@@ -1,4 +1,4 @@
-pertot = 0;
+pertot = [0,0];
 
 class Trie:
 
@@ -14,8 +14,11 @@ class Trie:
 
 H = [ [None]*13 for i in range(2) ]
 T_split = 20
-trie1 = Trie(1,10)
-trie2 = Trie(12,16)
+portbyttrie = Trie(1,10)
+destbyttrie = Trie(12,16)
+portpacktrie = Trie(1,10)
+destpacktrie = Trie(12,16)
+
 
 def get_Nth_bit(key, depth):
     #get the nth bit in the key
@@ -47,14 +50,14 @@ def create_children(n):
 				n.child[index].pastmem.append(n.pastmem[j])
 				n.child[index].pastval.append(n.pastval[j])
 
-def Update(trieroot, key, value):
+def Update(trieroot, key, value, totind):
     #return the depth of the node
     n = trieroot
     while 1==1:
 	    n.pastmem.append(key)
 	    n.pastval.append(value)
         if n.fringe:
-            if (n.volume + value / ( pertot * 1.0 )) * 100 < T_split:
+            if (n.volume + value / ( pertot[totind] * 1.0 )) * 100 < T_split:
                 n.volume = n.volume + value
                 return n.depth - 1
             else:
@@ -75,26 +78,29 @@ def Update(trieroot, key, value):
         n = c
         n.volume = n.volume + value
 
-def Update_CP(portkey,edestkey, value):
+def Update_CP(portkey,edestkey, bytvalue, pacvalue):
     #update function for each dimension
-    pertot = pertot + value;
+    pertot[0] = pertot[0] + bytvalue
+	pertot[1] = pertot[1] + pacvalue
     portkey = str(portkey)
     edestkey = edestkey.translate(None, ':')
-    len1 = Update(trie1, portkey, value)
-    len2 = Update(trie2, edestkey, value)
+    len1 = Update(portbyttrie, portkey, bytvalue, 0)
+    len2 = Update(destbyttrie, edestkey, bytvalue, 0)
+	len3 = Update(portpacktrie, portkey, pacvalue, 1)
+	len4 = Update(destpacktrie, edestkey, pacvalue, 1)
     if len1 >= 0 and len2 >= 0:
         p1 = prefix(portkey, len1)
         p2 = prefix(edestkey, len2)
-        H[len1][len2] = [p1,p2,str(value)]
+        H[len1][len2] = [p1,p2,str(bytvalue),str(pacvalue)]
 
-def HHHdet(trieroot):
+def HHHdet(trieroot, totind):
     n = trieroot
     hhhsum = 0
     for i in n.child:
-        hhhsum = hhhsum + HHHdet(n.child[i])
-	if (n.volume / ( pertot * 1.0 )) * 100 > 10:
-        if (n.volume / ( pertot * 1.0 )) * 100 - hhhsum > 10:
+        hhhsum = hhhsum + HHHdet(n.child[i], totind)
+	if (n.volume / ( pertot[totind] * 1.0 )) * 100 > 10:
+        if (n.volume / ( pertot[totind] * 1.0 )) * 100 - hhhsum > 10:
             print n.volume
 			print n.pastmem
-			hhhsum = hhhsum + (n.volume / ( pertot * 1.0 )) * 100
+			hhhsum = hhhsum + (n.volume / ( pertot[totind] * 1.0 )) * 100
     return hhhsum

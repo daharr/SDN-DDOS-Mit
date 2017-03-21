@@ -37,12 +37,12 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
             hub.sleep(10)
 
     def _request_stats(self, datapath):
-        self.logger.debug('send stats request: %016x', datapath.id)
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-
-        req = parser.OFPFlowStatsRequest(datapath)
-        datapath.send_msg(req)
+        if datapath.id == 0000000000000002:
+            self.logger.debug('send stats request: %016x', datapath.id)
+            ofproto = datapath.ofproto
+            parser = datapath.ofproto_parser
+            req = parser.OFPFlowStatsRequest(datapath)
+            datapath.send_msg(req)
 
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
