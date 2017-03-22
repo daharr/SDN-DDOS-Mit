@@ -108,11 +108,24 @@ def Update_CP(portkey,edestkey, bytvalue, pacvalue):
 def HHHdet(trieroot, totind):
     n = trieroot
     hhhsum = 0
-    for i in n.child:
-        hhhsum = hhhsum + HHHdet(n.child[i], totind)
-        if (n.volume / ( pertot[totind] * 1.0 )) * 100 > 10:
-            if (n.volume / ( pertot[totind] * 1.0 )) * 100 - hhhsum > 10:
-                print n.volume
-                print n.pastmem
-                hhhsum = hhhsum + (n.volume / ( pertot[totind] * 1.0 )) * 100
+    if n.depth != n.maxdepth and get_child(n,0) != None:
+        for i in range(0,len(n.child)):
+            hhhsum = hhhsum + HHHdet(get_child(n, i), totind)
+        val = (n.volume / ( pertot[totind] * 1.0 )) * 100
+        if val > 10 and val - hhhsum > 10:
+            print n.volume
+            print n.pastmem
+            hhhsum = hhhsum + val
+        return hhhsum
+    val = (n.volume / ( pertot[totind] * 1.0 )) * 100
+    if val > 10:
+        print n.volume
+        print n.pastmem
+        hhhsum = hhhsum + val
     return hhhsum
+
+def checkHHH():
+    HHHdet(portbyttrie, 0)
+    HHHdet(destbyttrie, 0)
+    HHHdet(portbyttrie, 1)
+    HHHdet(destbyttrie, 1)
