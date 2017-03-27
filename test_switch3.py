@@ -81,16 +81,17 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
                              stat.packet_count, stat.byte_count)#,
 #                            stat.match['ipv4_src'], stat.match['ipv4_dst'])
             flows.append(stat)
-			
+
         while len(flows) > 0:
-			flowcount = 1.0
-			bytecount = 0;
-			packetcount = 0;
+            flowcount = 1.0
+            bytecount = 0;
+            packetcount = 0;
             for i in range(1, len(flows)):
-			    if flows[0].match['eth_dst'] == flows[i].match['eth_dst']:
-				    bytecount = flows[i].byte_count + bytecount
-					packetcount = flows[i].packet_count + packetcount
-					del flows[i]
-					i--
+                if flows[0].match['eth_dst'] == flows[i].match['eth_dst']:
+                    bytecount = flows[i].byte_count + bytecount
+                    packetcount = flows[i].packet_count + packetcount
+                    del flows[i]
+                    i--
             Update3.Update_CP(flows[0].instructions[0].actions[0].port,flows[0].match['eth_dst'], (flows[0].byte_count + bytecount) / count, (packetcount + flows[0].packet_count) / count)
-			del flows[0]
+            del flows[0]
+        Update3.checkHHH()

@@ -105,27 +105,32 @@ def Update_CP(portkey,edestkey, bytvalue, pacvalue):
         p2 = prefix(edestkey, len2)
         H[len1][len2] = [p1,p2,str(bytvalue),str(pacvalue)]
 
-def HHHdet(trieroot, totind):
+def HHHdet(trieroot, totind, f):
     n = trieroot
     hhhsum = 0
     if n.depth != n.maxdepth and get_child(n,0) != None:
         for i in range(0,len(n.child)):
-            hhhsum = hhhsum + HHHdet(get_child(n, i), totind)
+            hhhsum = hhhsum + HHHdet(get_child(n, i), totind, f)
         val = (n.volume / ( pertot[totind] * 1.0 )) * 100
         if val > 10 and val - hhhsum > 10:
-            print n.volume
-            print n.pastmem
+            f.write(n.volume)
+            f.write(n.pastmem)
             hhhsum = hhhsum + val
         return hhhsum
     val = (n.volume / ( pertot[totind] * 1.0 )) * 100
     if val > 10:
-        print n.volume
-        print n.pastmem
+        f.write(n.volume)
+        f.write(n.pastmem)
         hhhsum = hhhsum + val
     return hhhsum
 
 def checkHHH():
-    HHHdet(portbyttrie, 0)
-    HHHdet(destbyttrie, 0)
-    HHHdet(portbyttrie, 1)
-    HHHdet(destbyttrie, 1)
+    f = open('HHH3file.txt', 'r+')
+    HHHdet(portbyttrie, 0, f)
+    f.write('\n\n\n')
+    HHHdet(destbyttrie, 0, f)
+    f.write('\n\n\n')
+    HHHdet(portbyttrie, 1, f)
+    f.write('\n\n\n')
+    HHHdet(destbyttrie, 1, f)
+    f.close()
