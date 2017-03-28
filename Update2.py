@@ -1,3 +1,5 @@
+import json
+
 pertot = 0
 entry = 0
 
@@ -96,10 +98,6 @@ def Update_CP(portkey,edestkey, value):
     edestkey = edestkey.translate(None, ':')
     len1 = Update(tries[0], portkey, value, entry)
     len2 = Update(tries[1], edestkey, value, entry)
-    if len1 >= 0 and len2 >= 0:
-        p1 = prefix(portkey, len1)
-        p2 = prefix(edestkey, len2)
-        H[len1][len2] = [p1,p2,str(value)]
 
 def HHHdet(trieroot, f):
     n = trieroot
@@ -109,20 +107,34 @@ def HHHdet(trieroot, f):
             hhhsum = hhhsum + HHHdet(get_child(n, i), f)
         val = (n.volume / ( pertot * 1.0 )) * 100
         if val > 10 and val - hhhsum > 10:
-            f.write(n.volume)
-            f.write(n.pastmem)
+            json.dump(entry, f)
+            f.write('\n')
+            json.dump(n.volume, f)
+            f.write('\n')
+            json.dump(n.pastmem[0][0:n.depth+1], f)
+            f.write('\n')
+            json.dump(len(n.pastmem), f)
+            f.write('\n\n')
             hhhsum = hhhsum + val
         return hhhsum
     val = (n.volume / ( pertot * 1.0 )) * 100
     if val > 10:
-        f.write(n.volume)
-        f.write(n.pastmem)
+        json.dump(entry, f)
+        f.write('\n')
+        json.dump(n.volume, f)
+        f.write('\n')
+        json.dump(n.pastmem[0][0:n.depth+1], f)
+        f.write('\n')
+        json.dump(len(n.pastmem), f)
+        f.write('\n\n')
         hhhsum = hhhsum + val
     return hhhsum
 
 def checkHHH():
-    f = open('HHH2file.txt', 'r+')
-    HHHdet(tries[0], f)
-    f.write('\n\n\n')
-    HHHdet(tries[1], f)
-    f.close()
+    if pertot != 0:
+        f = open('HHH2filep.txt', 'a')
+        HHHdet(tries[0], f)
+        f.close()
+        f = open('HHH2filed.txt', 'a')
+        HHHdet(tries[1], f)
+        f.close()

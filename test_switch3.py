@@ -86,12 +86,15 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
             flowcount = 1.0
             bytecount = 0;
             packetcount = 0;
-            for i in range(1, len(flows)):
+            i = 1
+            while i < len(flows):
                 if flows[0].match['eth_dst'] == flows[i].match['eth_dst']:
                     bytecount = flows[i].byte_count + bytecount
                     packetcount = flows[i].packet_count + packetcount
+                    flowcount = flowcount + 1
                     del flows[i]
-                    i--
-            Update3.Update_CP(flows[0].instructions[0].actions[0].port,flows[0].match['eth_dst'], (flows[0].byte_count + bytecount) / count, (packetcount + flows[0].packet_count) / count)
+                    i = i-1
+                i = i + 1
+            Update3.Update_CP(flows[0].instructions[0].actions[0].port,flows[0].match['eth_dst'], (flows[0].byte_count + bytecount) / flowcount, (packetcount + flows[0].packet_count) / flowcount)
             del flows[0]
         Update3.checkHHH()

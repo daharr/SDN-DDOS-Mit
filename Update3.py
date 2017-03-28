@@ -1,3 +1,5 @@
+import json
+
 pertot = [0,0]
 entry = 0
 
@@ -92,6 +94,7 @@ def Update_CP(portkey,edestkey, bytvalue, pacvalue):
     #update function for each dimension
     global pertot
     global entry
+    entry = entry + 1
     pertot[0] = pertot[0] + bytvalue
     pertot[1] = pertot[1] + pacvalue
     portkey = str(portkey)
@@ -100,10 +103,6 @@ def Update_CP(portkey,edestkey, bytvalue, pacvalue):
     len2 = Update(destbyttrie, edestkey, bytvalue, entry, 0)
     len3 = Update(portpacktrie, portkey, pacvalue, entry, 1)
     len4 = Update(destpacktrie, edestkey, pacvalue, entry, 1)
-    if len1 >= 0 and len2 >= 0:
-        p1 = prefix(portkey, len1)
-        p2 = prefix(edestkey, len2)
-        H[len1][len2] = [p1,p2,str(bytvalue),str(pacvalue)]
 
 def HHHdet(trieroot, totind, f):
     n = trieroot
@@ -113,24 +112,40 @@ def HHHdet(trieroot, totind, f):
             hhhsum = hhhsum + HHHdet(get_child(n, i), totind, f)
         val = (n.volume / ( pertot[totind] * 1.0 )) * 100
         if val > 10 and val - hhhsum > 10:
-            f.write(n.volume)
-            f.write(n.pastmem)
+            json.dump(entry, f)
+            f.write('\n')
+            json.dump(n.volume, f)
+            f.write('\n')
+            json.dump(n.pastmem[0][0:n.depth+1], f)
+            f.write('\n')
+            json.dump(len(n.pastmem), f)
+            f.write('\n\n')
             hhhsum = hhhsum + val
         return hhhsum
     val = (n.volume / ( pertot[totind] * 1.0 )) * 100
     if val > 10:
-        f.write(n.volume)
-        f.write(n.pastmem)
+        json.dump(entry, f)
+        f.write('\n')
+        json.dump(n.volume, f)
+        f.write('\n')
+        json.dump(n.pastmem[0][0:n.depth+1], f)
+        f.write('\n')
+        json.dump(len(n.pastmem), f)
+        f.write('\n\n')
         hhhsum = hhhsum + val
     return hhhsum
 
 def checkHHH():
-    f = open('HHH3file.txt', 'r+')
-    HHHdet(portbyttrie, 0, f)
-    f.write('\n\n\n')
-    HHHdet(destbyttrie, 0, f)
-    f.write('\n\n\n')
-    HHHdet(portbyttrie, 1, f)
-    f.write('\n\n\n')
-    HHHdet(destbyttrie, 1, f)
-    f.close()
+    if pertot[0] != 0:
+        f = open('HHH3filepb.txt', 'a')
+        HHHdet(portbyttrie, 0, f)
+        f.close()
+        f = open('HHH3filedb.txt', 'a')
+        HHHdet(destbyttrie, 0, f)
+        f.close()
+        f = open('HHH3filepp.txt', 'a')
+        HHHdet(portpacktrie, 1, f)
+        f.close()
+        f = open('HHH3filedp.txt', 'a')
+        HHHdet(destpacktrie, 1, f)
+        f.close()
