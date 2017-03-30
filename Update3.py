@@ -113,11 +113,11 @@ def HHHdet(trieroot, totind, f):
         val = (n.volume / ( pertot[totind] * 1.0 )) * 100
         if val > 10 and val - hhhsum > 10:
             json.dump(entry, f)
-            f.write('\n')
+            f.write(',')
             json.dump(n.volume, f)
-            f.write('\n')
+            f.write(',')
             json.dump(n.pastmem[0][0:n.depth+1], f)
-            f.write('\n')
+            f.write(',')
             json.dump(len(n.pastmem), f)
             f.write('\n\n')
             hhhsum = hhhsum + val
@@ -125,11 +125,11 @@ def HHHdet(trieroot, totind, f):
     val = (n.volume / ( pertot[totind] * 1.0 )) * 100
     if val > 10:
         json.dump(entry, f)
-        f.write('\n')
+        f.write(',')
         json.dump(n.volume, f)
-        f.write('\n')
+        f.write(',')
         json.dump(n.pastmem[0][0:n.depth+1], f)
-        f.write('\n')
+        f.write(',')
         json.dump(len(n.pastmem), f)
         f.write('\n\n')
         hhhsum = hhhsum + val
