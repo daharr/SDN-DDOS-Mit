@@ -38,7 +38,7 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
             hub.sleep(10)
 
     def _request_stats(self, datapath):
-        if datapath.id == 0000000000000002:
+        if datapath.id == 0000000000000001:
             self.logger.debug('send stats request: %016x', datapath.id)
             ofproto = datapath.ofproto
             parser = datapath.ofproto_parser
@@ -46,7 +46,7 @@ class SamplerSwitch(simple_switch_13.SimpleSwitch13):
             datapath.send_msg(req)
 
     def clear_flows(self, datapath):
-        if datapath.id == 0000000000000002:
+        if datapath.id == 0000000000000001:
             self.logger.debug('send stat clear: %016x', datapath.id)
             parser = datapath.ofproto_parser
             ofproto = datapath.ofproto

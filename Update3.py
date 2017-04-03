@@ -119,7 +119,7 @@ def HHHdet(trieroot, totind, f):
             json.dump(n.pastmem[0][0:n.depth+1], f)
             f.write(',')
             json.dump(len(n.pastmem), f)
-            f.write('\n\n')
+            f.write('\n')
             hhhsum = hhhsum + val
         return hhhsum
     val = (n.volume / ( pertot[totind] * 1.0 )) * 100
@@ -131,7 +131,7 @@ def HHHdet(trieroot, totind, f):
         json.dump(n.pastmem[0][0:n.depth+1], f)
         f.write(',')
         json.dump(len(n.pastmem), f)
-        f.write('\n\n')
+        f.write('\n')
         hhhsum = hhhsum + val
     return hhhsum
 
